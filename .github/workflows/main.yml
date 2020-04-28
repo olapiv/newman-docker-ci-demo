@@ -1,0 +1,66 @@
+name: Postman Testing Docker CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the docker-compose stack
+      run: docker-compose -f docker-compose.base.yml -f docker-compose.staging.yml build
+
+    - name: Run the docker-compose stack
+      run: docker-compose -f docker-compose.base.yml -f docker-compose.staging.yml up -d
+
+    - name: Check if all 4 containers are alive
+      run: |
+        sleep 40s
+        if [ $(docker ps | grep hello_django_ | wc -l) -lt 4 ]
+        then
+          echo "Less than 4 docker services alive."
+          exit 1
+        fi
+
+    - name: Have a look at all containers
+      run: docker ps -a
+
+    - name: Show Newman results
+      run: |
+        sleep 2m
+        docker logs hello_django_newman_stage
+
+    - name: Check Newman Exit Code
+      run: |
+        if [ $(docker inspect hello_django_newman_stage --format='{{.State.ExitCode}}') -ne 0 ] 
+        then
+          echo "Newman failed."
+          exit 1
+        fi
+        
+    - name: Check if Newman is in endless loop
+      run: |
+        if [ $(docker ps | grep hello_django_newman | wc -l) -ne 0 ]
+        then
+          echo "Newman still running."
+          exit 1
+        fi
+
+    - name: Log into Dockerhub registry
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username <YOUR_DOCKERHUB_USERNAME> --password-stdin
+
+    - name: Push all images to Dockerhub
+      run: |
+        docker tag hello_django <YOUR_DOCKERHUB_USERNAME>/hello_django:master
+        docker tag hello_django_nginx <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
+        docker tag hello_django_certbot <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
+
+        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django:master
+        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
+        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
