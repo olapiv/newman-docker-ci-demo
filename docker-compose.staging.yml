@@ -1,10 +1,9 @@
 # This is one step before pushing images to Dockerhub registry. Can be used in Github Actions.
 
-# Test new build with Newman. Development environment is taken, so that live DB & live
-# AWS are not accidentally trashed with data. Also may be difficult to access Digital Ocean
-# DB with Github's IP-Address.
-
-# REQUIRES ENVIRONMENTAL VARIABLES TO BE SOURCED FIRST (done in Github Actions)
+# Test new build with Newman. Staging environment is fairly similar to development environment.
+# This is done, so that live DB is not accidentally trashed with data. Also may be difficult 
+# to access DB-server with Github's IP-Address. If any actual secret keys are still required,
+# consider uploading these keys to Github-Secrets.
 
 # Use with:
 # docker-compose -f docker-compose.base.yml -f docker-compose.staging.yml up --build

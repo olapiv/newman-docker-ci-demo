@@ -8,10 +8,29 @@ See the configuration for Github Actions in the [main.yml file](.github/workflow
 
 ## Setup
 
-### General
-
 * Install Docker
 * Run either:
   * Locally: `docker-compose -f docker-compose.base.yml -f docker-compose.local.yml up --build`
   * on Github Cloud: `docker-compose -f docker-compose.base.yml -f docker-compose.staging.yml up --build`
   * on Production Server: `docker-compose -f docker-compose.base.yml -f docker-compose.production.yml up --build`
+
+For the configuration on the production server to work, your own Dockerhub account is required!
+
+## Potential Improvements
+
+Currently, none of the Docker builds are being cached in Github Actions. Consider using [actions/cache@v1](https://github.com/actions/cache) with:
+
+```sh
+docker save \
+    hello_django $(docker history -q hello_django | grep -v "<missing>") \
+    hello_django_nginx $(docker history -q hello_django_nginx | grep -v "<missing>") \
+    hello_django_certbot $(docker history -q hello_django_certbot | grep -v "<missing>") \
+    hello_django_newman $(docker history -q hello_django_newman | grep -v "<missing>") \
+    --output <CHOSEN_CACHE_PATH>
+```
+
+and
+
+```sh
+docker load --input <CHOSEN_CACHE_PATH>
+```
