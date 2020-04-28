@@ -33,7 +33,7 @@ jobs:
 
     - name: Show Newman results
       run: |
-        sleep 2m
+        sleep 1m
         docker logs hello_django_newman_stage
 
     - name: Check Newman Exit Code
@@ -52,15 +52,16 @@ jobs:
           exit 1
         fi
 
-    - name: Log into Dockerhub registry
-      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username <YOUR_DOCKERHUB_USERNAME> --password-stdin
+    # Implement your Dockerhub credentials here
+    # - name: Log into Dockerhub registry
+    #   run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username <YOUR_DOCKERHUB_USERNAME> --password-stdin
 
-    - name: Push all images to Dockerhub
-      run: |
-        docker tag hello_django <YOUR_DOCKERHUB_USERNAME>/hello_django:master
-        docker tag hello_django_nginx <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
-        docker tag hello_django_certbot <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
+    # - name: Push all images to Dockerhub
+    #   run: |
+    #     docker tag hello_django <YOUR_DOCKERHUB_USERNAME>/hello_django:master
+    #     docker tag hello_django_nginx <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
+    #     docker tag hello_django_certbot <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
 
-        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django:master
-        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
-        docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
+    #     docker push <YOUR_DOCKERHUB_USERNAME>/hello_django:master
+    #     docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_nginx:master
+    #     docker push <YOUR_DOCKERHUB_USERNAME>/hello_django_certbot:master
