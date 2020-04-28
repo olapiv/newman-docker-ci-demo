@@ -31,7 +31,7 @@ jobs:
 
     - name: Show Newman results
       run: |
-        sleep 25m
+        sleep 25s
         docker logs hello_django_newman_stage
 
     - name: Check Newman Exit Code
