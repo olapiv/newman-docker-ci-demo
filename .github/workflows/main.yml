@@ -21,19 +21,17 @@ jobs:
 
     - name: Check if all 4 containers are alive
       run: |
-        sleep 40s
+        sleep 25s
+        docker ps -a
         if [ $(docker ps | grep hello_django_ | wc -l) -lt 4 ]
         then
           echo "Less than 4 docker services alive."
           exit 1
         fi
 
-    - name: Have a look at all containers
-      run: docker ps -a
-
     - name: Show Newman results
       run: |
-        sleep 1m
+        sleep 25m
         docker logs hello_django_newman_stage
 
     - name: Check Newman Exit Code

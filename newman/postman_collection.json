@@ -25,11 +25,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "nginx:80/",
+					"raw": "localhost",
 					"host": [
-						"nginx"
-					],
-					"port": "80"
+						"localhost"
+					]
 				}
 			},
 			"response": []
