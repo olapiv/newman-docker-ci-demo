@@ -1,0 +1,37 @@
+# This is one step before pushing images to Dockerhub registry. Can be used in Github Actions.
+
+# Test new build with Newman. Development environment is taken, so that live DB & live
+# AWS are not accidentally trashed with data. Also may be difficult to access Digital Ocean
+# DB with Github's IP-Address.
+
+# REQUIRES ENVIRONMENTAL VARIABLES TO BE SOURCED FIRST (done in Github Actions)
+
+# Use with:
+# docker-compose -f docker-compose.base.yml -f docker-compose.staging.yml up --build
+
+version: '3.7'
+
+services:
+  django:
+    build: ./django
+    container_name: hello_django_stage
+    env_file:
+      - ./django/staging.env
+
+  nginx:
+    build: ./nginx
+    container_name: hello_django_nginx_stage
+  
+  certbot:
+    build: ./certbot
+    container_name: hello_django_certbot_stage
+    environment:
+      DEV: "true"
+      NGINX_CONTAINER: "hello_django_nginx_stage"
+
+  newman:
+    build: ./newman
+    image: hello_django_newman
+    container_name: hello_django_newman_stage
+    entrypoint: ["/home/hello_django_django/entrypoint.sh"]
+  

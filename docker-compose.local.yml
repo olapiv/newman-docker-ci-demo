@@ -1,25 +1,21 @@
+# docker-compose -f docker-compose.base.yml -f docker-compose.local.yml up --build
+
 version: "3.7"
 
 services:
   django:
+    build: ./django
     container_name: hello_django_dev
-    restart: "no"
-    env_file:
-      - ./django/development.env
-
-  graphhopper:
-    container_name: graphhopper_dev
-    restart: "no"
     env_file:
       - ./django/development.env
 
   nginx:
+    build: ./nginx
     container_name: hello_django_nginx_dev
-    restart: "on-failure"
 
   certbot:
+    build: ./certbot
     container_name: hello_django_certbot_dev
     environment:
       DEV: "true"
-      NGINX_CONTAINER: "shnake_nginx_dev"
-    restart: "no"
+      NGINX_CONTAINER: "hello_django_nginx_dev"

@@ -1,0 +1,25 @@
+# docker-compose -f docker-compose.base.yml -f docker-compose.production.yml up --build
+
+version: '3.7'
+
+services:
+  django:
+    # image: <YOUR_DOCKER_USERNAME>/hello_django:master
+    container_name: hello_django_prod
+    restart: "always"
+    env_file:
+      - ./django/production.env
+
+  nginx:
+    # image: <YOUR_DOCKER_USERNAME>/hello_django_nginx:master
+    container_name: hello_django_nginx_prod
+    restart: "always"
+  
+  certbot:
+    # image: <YOUR_DOCKER_USERNAME>/hello_django_certbot:master
+    container_name: hello_django_certbot_prod
+    restart: "always"
+    environment:
+      DEV: "false"
+      SSL_EMAIL: "my_email@icloud.com"
+      NGINX_CONTAINER: "hello_django_nginx_prod"
