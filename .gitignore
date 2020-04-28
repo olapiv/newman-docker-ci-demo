@@ -84,7 +84,7 @@ target/
 __pycache__/
 local_settings.py
 
-.env
+# .env
 db.sqlite3
 
 
@@ -92,13 +92,15 @@ db.sqlite3
 .\#*
 *~
 \#*\#
-*.env
-*.environment
+# *.env
+# *.environment
 migrations_old
 *.orig
 *.org
 deploy.sh
 push_and_deploy.sh
+
+!staging.env
 
 ### Pycharm ###
 venv/
