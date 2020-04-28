@@ -33,5 +33,5 @@ services:
     build: ./newman
     image: hello_django_newman
     container_name: hello_django_newman_stage
-    entrypoint: ["/home/hello_django_django/entrypoint.sh"]
+    entrypoint: ["/home/hello_django/entrypoint.sh"]
   
