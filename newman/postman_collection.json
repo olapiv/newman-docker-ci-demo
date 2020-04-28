@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "e8bc8e6f-8f52-4bc0-8b5f-6fda87ac220f",
+		"name": "Demo-Github-Actions-CLI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Check Homepage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "86dc6fa6-5588-4087-b189-837101ac7852",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "nginx:80",
+					"host": [
+						"nginx"
+					],
+					"port": "80"
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
