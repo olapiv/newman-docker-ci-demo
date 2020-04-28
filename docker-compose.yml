@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+  django:
+    build: ./django
+    container_name: hello_django_prod
+    restart: always
+    expose:
+      - 8000
+    volumes:
+      - static_data:/home/hello_django/static
+    env_file:
+      - ./django/production.env
+    depends_on:
+      - graphhopper
+
+  graphhopper:
+    image: graphhopper/graphhopper:latest
+    container_name: hello_django_graphhopper_prod
+    restart: always
+    command: ["/data/europe_germany_hamburg.pbf"]
+    env_file:
+      - ./django/production.env
+    volumes:
+      - graphhopper_data:/data
+
+  nginx:
+    image: hello_django_nginx
+    build: ./nginx
+    container_name: hello_django_nginx_prod
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    restart: always
+    ports:
+      # - <Port in Browser>:<Port Nginx listens to>
+      - 80:80
+      - 443:443
+    volumes:
+      - static_data:/home/hello_django/static
+      - ssl_data_conf:/etc/letsencrypt
+      - ssl_data_www:/var/www/certbot
+      - /var/run/docker.sock:/tmp/docker.sock
+    depends_on:
+      - django
+      - graphhopper
+      - certbot
+  
+  certbot:
+    build: ./certbot
+    entrypoint: ["/bin/bash",  "/home/hello_django/setup.sh"]
+    container_name: hello_django_certbot_prod
+    restart: always
+    environment:
+      DEV: "false"
+      SSL_EMAIL: "my_email@icloud.com"
+      NGINX_CONTAINER: "shnake_nginx_prod"
+    volumes:
+      - ssl_data_conf:/etc/letsencrypt
+      - ssl_data_www:/var/www/certbot
+      - /var/run/docker.sock:/tmp/docker.sock
+
+volumes:
+  static_data:
+  graphhopper_data:
+  ssl_data_conf:
+  ssl_data_www:
