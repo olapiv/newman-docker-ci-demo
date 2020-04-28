@@ -1,5 +1,5 @@
 #!/bin/sh
 
-sleep 30s; 
+sleep 1m; 
 
 newman run postman_collection.json;
